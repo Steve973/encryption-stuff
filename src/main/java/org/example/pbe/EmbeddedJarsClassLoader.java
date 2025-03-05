@@ -62,6 +62,31 @@ public class EmbeddedJarsClassLoader extends URLClassLoader {
                 .orElse(null);
     }
 
+    /**
+     * Try using findLoadedClass first?
+     */
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        // First, check if the class has already been loaded
+        Class<?> c = findLoadedClass(name);
+        
+        if (c == null) {
+            // If not loaded yet, try to find it in our JARs first
+            try {
+                c = findClass(name);
+            } catch (ClassNotFoundException e) {
+                // If not in our JARs, delegate to parent
+                return super.loadClass(name, resolve);
+            }
+        }
+        
+        if (resolve) {
+            resolveClass(c);
+        }
+        
+        return c;
+    }
+
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         try {
