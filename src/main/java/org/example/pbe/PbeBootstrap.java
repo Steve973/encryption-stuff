@@ -45,6 +45,44 @@ public class PbeBootstrap {
             e.printStackTrace();
             System.exit(1);
         }
+
+        // Try logging like this to get more insight where it is failing?
+        try {
+            System.out.println("Before attempting to access the class");
+            System.out.println("Current thread classloader: " + Thread.currentThread().getContextClassLoader());
+            
+            // Instead of directly calling the static method, let's break this down:
+            String className = "com.example.ProblemClass"; // Replace with actual class name
+            System.out.println("Attempting to load class: " + className);
+            
+            // Try to load the class explicitly using our classloader
+            Class<?> problemClass = Thread.currentThread().getContextClassLoader().loadClass(className);
+            System.out.println("Successfully loaded class: " + className);
+            System.out.println("Class's classloader: " + problemClass.getClassLoader());
+            
+            // Now try to access the method
+            String methodName = "problematicMethod"; // Replace with actual method name
+            System.out.println("Attempting to get method: " + methodName);
+            Method method = problemClass.getMethod(methodName, /* parameter types */);
+            System.out.println("Successfully got method: " + methodName);
+            
+            // Now try to invoke it
+            System.out.println("Attempting to invoke method");
+            Object result = method.invoke(null /* since it's static */);
+            System.out.println("Successfully invoked method");
+        } catch (Throwable t) {
+            System.err.println("Exception type: " + t.getClass().getName());
+            System.err.println("Exception message: " + t.getMessage());
+            t.printStackTrace();
+            
+            // If it's an InvocationTargetException, get the cause
+            if (t instanceof InvocationTargetException) {
+                Throwable cause = ((InvocationTargetException) t).getTargetException();
+                System.err.println("Invocation cause type: " + cause.getClass().getName());
+                System.err.println("Invocation cause message: " + cause.getMessage());
+                cause.printStackTrace();
+            }
+        }
     }
     
     private static List<URL> findJars() throws Exception {
