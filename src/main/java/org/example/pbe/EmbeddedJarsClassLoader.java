@@ -63,7 +63,7 @@ public class EmbeddedJarsClassLoader extends URLClassLoader {
     }
 
     /**
-     * Try using findLoadedClass first?
+     * TODO: Try using findLoadedClass first?
      */
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {

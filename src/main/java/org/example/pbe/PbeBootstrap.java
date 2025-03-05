@@ -46,7 +46,7 @@ public class PbeBootstrap {
             System.exit(1);
         }
 
-        // Try logging like this to get more insight where it is failing?
+        // TODO: Try logging like this to get more insight where it is failing?
         try {
             System.out.println("Before attempting to access the class");
             System.out.println("Current thread classloader: " + Thread.currentThread().getContextClassLoader());
